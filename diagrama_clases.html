@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagrama de Clases UML - Minimalista Azul</title>
+    <style>
+        :root {
+            /* Paleta Minimalista de Azules */
+            --bg-page: #f8fafc;
+            --card-bg: #ffffff;
+            --border-subtle: #e2e8f0;
+            --border-card: #cbd5e1;
+            --text-title: #0f172a;
+            --text-body: #1e293b;
+            --text-muted: #64748b;
+            --primary-navy: #1e3a8a;
+            --blue-royal: #2563eb;
+            --blue-ocean: #0284c7;
+            --blue-ice: #dbeafe;
+            --blue-sky: #e0f2fe;
+            --blue-light: #eff6ff;
+            --slate-light: #f1f5f9;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-body);
+            margin: 0;
+            padding: 30px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .header {
+            text-align: center;
+            background: var(--card-bg);
+            padding: 28px 36px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05);
+            margin-bottom: 24px;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .header h1 {
+            margin: 0 0 10px 0;
+            color: var(--primary-navy);
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            margin: 4px 0;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .badges {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .badge {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 5px 14px;
+            border-radius: 20px;
+            letter-spacing: 0.3px;
+        }
+        .b-abstract { background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
+        .b-interface { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
+        .b-entity { background: #1e3a8a; color: #ffffff; }
+        .b-service { background: #eff6ff; color: #1d4ed8; border: 1px solid #dbeafe; }
+        .b-dto { background: #f1f5f9; color: #334155; border: 1px solid #e2e8f0; }
+
+        .actions {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 24px;
+        }
+
+        .btn {
+            background-color: var(--primary-navy);
+            color: #ffffff;
+            border: none;
+            padding: 12px 28px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(30, 58, 138, 0.25);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+        .btn:hover {
+            background-color: #1e40af;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(30, 58, 138, 0.35);
+        }
+
+        .canvas-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 36px 24px;
+            box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.05);
+            border: 1px solid var(--border-subtle);
+            overflow-x: auto;
+        }
+
+        /* Tipografía y estilos UML */
+        svg text {
+            font-family: 'Consolas', 'Cascadia Code', monospace;
+        }
+        .uml-box {
+            fill: #ffffff;
+            stroke-width: 1.6px;
+            rx: 8px;
+            filter: drop-shadow(0 2px 4px rgba(15, 23, 42, 0.04));
+        }
+        .uml-header {
+            font-weight: 700;
+            font-size: 13px;
+            text-anchor: middle;
+        }
+        .uml-stereotype {
+            font-style: italic;
+            font-size: 11px;
+            text-anchor: middle;
+        }
+        .uml-member {
+            font-size: 11px;
+        }
+        .uml-line {
+            stroke: #475569;
+            stroke-width: 1.6px;
+            fill: none;
+        }
+        .uml-dashed {
+            stroke: #3b82f6;
+            stroke-width: 1.6px;
+            stroke-dasharray: 6,4;
+            fill: none;
+        }
+        .uml-text-label {
+            font-size: 10px;
+            fill: #64748b;
+            font-style: italic;
+        }
+
+        @media print {
+            body { background: white; padding: 0; }
+            .actions, .badges { display: none; }
+            .header { box-shadow: none; border: none; padding: 0 0 10px 0; margin-bottom: 10px; }
+            .canvas-card { box-shadow: none; border: none; padding: 0; }
+            @page { size: landscape; margin: 8mm; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Diagrama de Clases - Arquitectura del Sistema</h1>
+        <p><strong>Asignatura:</strong> Introducción a Aplicaciones Web Progresivas (PWA) | <strong>Carrera:</strong> Desarrollo de Software Multiplataforma</p>
+        <p><strong>Alumno:</strong> Gerardo Manzano Villafaña | <strong>Grupo:</strong> GIDS6102 | <strong>Maestro:</strong> Francisco Hasani Barrera</p>
+        
+        <div class="badges">
+            <span class="badge b-abstract">Clases Abstractas</span>
+            <span class="badge b-interface">Interfaces</span>
+            <span class="badge b-entity">Entidades JPA</span>
+            <span class="badge b-service">Servicios</span>
+            <span class="badge b-dto">DTOs Polimórficos</span>
+        </div>
+    </div>
+
+    <div class="actions">
+        <button class="btn" onclick="window.print()">🖨️ Guardar / Imprimir en PDF</button>
+    </div>
+
+    <div class="canvas-card">
+        <svg viewBox="0 0 1280 920" width="100%" height="920" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <!-- Flecha de Herencia Minimalista -->
+                <marker id="arrow-inherit" viewBox="0 0 14 14" refX="14" refY="7" markerWidth="11" markerHeight="11" orient="auto">
+                    <polygon points="0,0 14,7 0,14" fill="#ffffff" stroke="#334155" stroke-width="1.6"/>
+                </marker>
+                <!-- Flecha de Uso / Asociación -->
+                <marker id="arrow-use" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+                    <polyline points="0,0 10,5 0,10" fill="none" stroke="#3b82f6" stroke-width="1.6"/>
+                </marker>
+            </defs>
+
+            <!-- ======================================================== -->
+            <!-- 1. CAPA DE PERSISTENCIA (BASE ENTITY & USUARIO)            -->
+            <!-- ======================================================== -->
+            
+            <!-- BaseEntity (Clase Abstracta) -->
+            <g transform="translate(40, 40)">
+                <rect class="uml-box" width="240" height="150" stroke="#3b82f6"/>
+                <rect width="240" height="38" fill="#dbeafe" rx="8"/>
+                <text x="120" y="16" class="uml-stereotype" fill="#2563eb">&lt;&lt;abstract&gt;&gt;</text>
+                <text x="120" y="32" class="uml-header" fill="#1e3a8a">BaseEntity</text>
+                <line x1="0" y1="38" x2="240" y2="38" stroke="#bfdbfe" stroke-width="1.5"/>
+                
+                <text x="12" y="58" class="uml-member" fill="#334155">- id : Long</text>
+                <text x="12" y="76" class="uml-member" fill="#334155">- fechaCreacion : LocalDateTime</text>
+                
+                <line x1="0" y1="88" x2="240" y2="88" stroke="#f1f5f9" stroke-width="1.5"/>
+                <text x="12" y="106" class="uml-member" fill="#1e293b">+ getId() : Long</text>
+                <text x="12" y="124" class="uml-member" fill="#1e293b">+ getFechaCreacion()</text>
+                <text x="12" y="142" class="uml-member" fill="#64748b"># onCreate() : void</text>
+            </g>
+
+            <!-- Usuario (Entidad JPA) -->
+            <g transform="translate(40, 260)">
+                <rect class="uml-box" width="240" height="180" stroke="#1e3a8a"/>
+                <rect width="240" height="38" fill="#1e3a8a" rx="8"/>
+                <text x="120" y="16" class="uml-stereotype" fill="#93c5fd">&lt;&lt;entity&gt;&gt;</text>
+                <text x="120" y="32" class="uml-header" fill="#ffffff">Usuario</text>
+                <line x1="0" y1="38" x2="240" y2="38" stroke="#1e3a8a" stroke-width="1.5"/>
+                
+                <text x="12" y="58" class="uml-member" fill="#334155">- nombre : String</text>
+                <text x="12" y="74" class="uml-member" fill="#334155">- correo : String [UNIQUE]</text>
+                <text x="12" y="90" class="uml-member" fill="#334155">- telefono : String</text>
+                <text x="12" y="106" class="uml-member" fill="#334155">- activo : Boolean</text>
+                
+                <line x1="0" y1="116" x2="240" y2="116" stroke="#f1f5f9" stroke-width="1.5"/>
+                <text x="12" y="134" class="uml-member" fill="#1e293b">+ getNombre() : String</text>
+                <text x="12" y="150" class="uml-member" fill="#1e293b">+ getCorreo() : String</text>
+                <text x="12" y="166" class="uml-member" fill="#1e293b">+ getActivo() : Boolean</text>
+            </g>
+
+            <!-- Herencia BaseEntity <|-- Usuario -->
+            <path d="M 160 260 L 160 190" class="uml-line" marker-end="url(#arrow-inherit)"/>
+            <text x="168" y="225" class="uml-text-label">hereda</text>
+
+            <!-- ======================================================== -->
+            <!-- 2. REPOSITORIO & ESPECIFICACIONES JPA                     -->
+            <!-- ======================================================== -->
+
+            <!-- UsuarioRepository (Interface) -->
+            <g transform="translate(340, 260)">
+                <rect class="uml-box" width="280" height="150" stroke="#0284c7"/>
+                <rect width="280" height="38" fill="#e0f2fe" rx="8"/>
+                <text x="140" y="16" class="uml-stereotype" fill="#0369a1">&lt;&lt;interface&gt;&gt;</text>
+                <text x="140" y="32" class="uml-header" fill="#075985">UsuarioRepository</text>
+                <line x1="0" y1="38" x2="280" y2="38" stroke="#bae6fd" stroke-width="1.5"/>
+                
+                <text x="12" y="60" class="uml-member" fill="#1e293b">+ findByNombreAndCorreo(...) : Optional</text>
+                <text x="12" y="80" class="uml-member" fill="#1e293b">+ existsByCorreo(correo) : boolean</text>
+                <text x="12" y="100" class="uml-member" fill="#1e293b">+ existsByCorreoAndIdNot(...) : boolean</text>
+                <text x="12" y="125" class="uml-member" fill="#64748b" font-style="italic">extends JpaRepository,</text>
+                <text x="12" y="140" class="uml-member" fill="#64748b" font-style="italic">JpaSpecificationExecutor</text>
+            </g>
+
+            <!-- UsuarioSpecification -->
+            <g transform="translate(340, 40)">
+                <rect class="uml-box" width="280" height="90" stroke="#94a3b8"/>
+                <rect width="280" height="30" fill="#f8fafc" rx="8"/>
+                <text x="140" y="20" class="uml-header" fill="#334155">UsuarioSpecification</text>
+                <line x1="0" y1="30" x2="280" y2="30" stroke="#e2e8f0" stroke-width="1.5"/>
+                <text x="12" y="55" class="uml-member" fill="#1e293b">+ conFiltros(req) : Specification</text>
+                <text x="12" y="75" class="uml-member" fill="#64748b" font-style="italic">(Predicados dinámicos JPA)</text>
+            </g>
+
+            <!-- Repository persiste Usuario -->
+            <path d="M 340 330 L 280 330" class="uml-line" marker-end="url(#arrow-use)"/>
+            <text x="290" y="320" class="uml-text-label">persiste</text>
+
+            <!-- ======================================================== -->
+            <!-- 3. CAPA DE SERVICIO (DESACOPLAMIENTO)                     -->
+            <!-- ======================================================== -->
+
+            <!-- UsuarioService (Interface) -->
+            <g transform="translate(680, 40)">
+                <rect class="uml-box" width="270" height="180" stroke="#0284c7"/>
+                <rect width="270" height="38" fill="#e0f2fe" rx="8"/>
+                <text x="135" y="16" class="uml-stereotype" fill="#0369a1">&lt;&lt;interface&gt;&gt;</text>
+                <text x="135" y="32" class="uml-header" fill="#075985">UsuarioService</text>
+                <line x1="0" y1="38" x2="270" y2="38" stroke="#bae6fd" stroke-width="1.5"/>
+                
+                <text x="12" y="58" class="uml-member" fill="#1e293b">+ crearUsuario(req) : UsuarioResponse</text>
+                <text x="12" y="76" class="uml-member" fill="#1e293b">+ obtenerTodos() : List</text>
+                <text x="12" y="94" class="uml-member" fill="#1e293b">+ consultarPorLlaveCompuesta()</text>
+                <text x="12" y="112" class="uml-member" fill="#1e293b">+ actualizarUsuario(req)</text>
+                <text x="12" y="130" class="uml-member" fill="#1e293b">+ eliminarUsuario(req) : void</text>
+                <text x="12" y="148" class="uml-member" fill="#1e293b">+ buscarUsuariosDinamico()</text>
+            </g>
+
+            <!-- UsuarioServiceImpl (Implementación) -->
+            <g transform="translate(680, 260)">
+                <rect class="uml-box" width="270" height="150" stroke="#60a5fa"/>
+                <rect width="270" height="38" fill="#eff6ff" rx="8"/>
+                <text x="135" y="16" class="uml-stereotype" fill="#2563eb">&lt;&lt;service&gt;&gt;</text>
+                <text x="135" y="32" class="uml-header" fill="#1e3a8a">UsuarioServiceImpl</text>
+                <line x1="0" y1="38" x2="270" y2="38" stroke="#dbeafe" stroke-width="1.5"/>
+                
+                <text x="12" y="58" class="uml-member" fill="#334155">- usuarioRepository : Repository</text>
+                <line x1="0" y1="68" x2="270" y2="68" stroke="#f1f5f9" stroke-width="1.5"/>
+                <text x="12" y="86" class="uml-member" fill="#1e293b">+ crearUsuario(...) : UsuarioResponse</text>
+                <text x="12" y="104" class="uml-member" fill="#1e293b">+ consultarPorLlaveCompuesta(...)</text>
+                <text x="12" y="122" class="uml-member" fill="#64748b"># localizarPorLlaveCompuesta(...)</text>
+            </g>
+
+            <!-- Realización ServiceImpl ..|> Service -->
+            <path d="M 815 260 L 815 220" class="uml-dashed" marker-end="url(#arrow-inherit)"/>
+            <text x="825" y="242" class="uml-text-label">implementa</text>
+
+            <!-- ServiceImpl inyecta Repository -->
+            <path d="M 680 330 L 620 330" class="uml-line" marker-end="url(#arrow-use)"/>
+            <text x="630" y="320" class="uml-text-label">inyecta</text>
+
+            <!-- ======================================================== -->
+            <!-- 4. CAPA REST (CONTROLLER & ADVICE)                        -->
+            <!-- ======================================================== -->
+
+            <!-- UsuarioController -->
+            <g transform="translate(1000, 40)">
+                <rect class="uml-box" width="240" height="190" stroke="#1d4ed8"/>
+                <rect width="240" height="38" fill="#1d4ed8" rx="8"/>
+                <text x="120" y="16" class="uml-stereotype" fill="#dbeafe">&lt;&lt;rest-controller&gt;&gt;</text>
+                <text x="120" y="32" class="uml-header" fill="#ffffff">UsuarioController</text>
+                <line x1="0" y1="38" x2="240" y2="38" stroke="#1d4ed8" stroke-width="1.5"/>
+                
+                <text x="12" y="58" class="uml-member" fill="#334155">- usuarioService : Service</text>
+                <line x1="0" y1="68" x2="240" y2="68" stroke="#f1f5f9" stroke-width="1.5"/>
+                <text x="12" y="86" class="uml-member" fill="#1e293b">+ crearUsuario() : POST 201</text>
+                <text x="12" y="104" class="uml-member" fill="#1e293b">+ consultarUsuarios() : GET 200</text>
+                <text x="12" y="122" class="uml-member" fill="#1e293b">+ consultarPorLlave() : POST 200</text>
+                <text x="12" y="140" class="uml-member" fill="#1e293b">+ actualizarUsuario() : PATCH 200</text>
+                <text x="12" y="158" class="uml-member" fill="#1e293b">+ eliminarUsuario() : DELETE 200</text>
+                <text x="12" y="176" class="uml-member" fill="#1e293b">+ buscarUsuarios() : POST 200</text>
+            </g>
+
+            <!-- Controller usa Service -->
+            <path d="M 1000 130 L 950 130" class="uml-line" marker-end="url(#arrow-use)"/>
+            <text x="960" y="120" class="uml-text-label">usa</text>
+
+            <!-- GlobalExceptionHandler -->
+            <g transform="translate(1000, 260)">
+                <rect class="uml-box" width="240" height="150" stroke="#0369a1"/>
+                <rect width="240" height="38" fill="#f0f9ff" rx="8"/>
+                <text x="120" y="16" class="uml-stereotype" fill="#0284c7">&lt;&lt;controller-advice&gt;&gt;</text>
+                <text x="120" y="32" class="uml-header" fill="#0c4a6e">GlobalExceptionHandler</text>
+                <line x1="0" y1="38" x2="240" y2="38" stroke="#e0f2fe" stroke-width="1.5"/>
+                
+                <text x="12" y="58" class="uml-member" fill="#1e293b">+ manejarValidaciones() : 400</text>
+                <text x="12" y="78" class="uml-member" fill="#1e293b">+ manejarNoEncontrado() : 404</text>
+                <text x="12" y="98" class="uml-member" fill="#1e293b">+ manejarCorreoDuplicado() : 409</text>
+                <text x="12" y="118" class="uml-member" fill="#1e293b">+ manejarIntegridad() : 409</text>
+                <text x="12" y="138" class="uml-member" fill="#1e293b">+ manejarInesperado() : 500</text>
+            </g>
+
+            <!-- ======================================================== -->
+            <!-- 5. JERARQUÍA DE DTOS REQUEST (POLIMORFISMO Y HERENCIA)    -->
+            <!-- ======================================================== -->
+
+            <!-- UsuarioIdentificadorRequest (Clase Abstracta) -->
+            <g transform="translate(340, 500)">
+                <rect class="uml-box" width="280" height="120" stroke="#3b82f6"/>
+                <rect width="280" height="38" fill="#dbeafe" rx="8"/>
+                <text x="140" y="16" class="uml-stereotype" fill="#2563eb">&lt;&lt;abstract DTO&gt;&gt;</text>
+                <text x="140" y="32" class="uml-header" fill="#1e3a8a">UsuarioIdentificadorRequest</text>
+                <line x1="0" y1="38" x2="280" y2="38" stroke="#bfdbfe" stroke-width="1.5"/>
+                
+                <text x="12" y="58" class="uml-member" fill="#334155">- nombre : String [@NotBlank]</text>
+                <text x="12" y="76" class="uml-member" fill="#334155">- correo : String [@NotBlank, @Email]</text>
+                <line x1="0" y1="84" x2="280" y2="84" stroke="#f1f5f9" stroke-width="1.5"/>
+                <text x="12" y="102" class="uml-member" fill="#1e293b">+ getNombre() / getCorreo()</text>
+            </g>
+
+            <!-- UsuarioConsultaRequest -->
+            <g transform="translate(100, 710)">
+                <rect class="uml-box" width="210" height="80" stroke="#94a3b8"/>
+                <rect width="210" height="30" fill="#f8fafc" rx="8"/>
+                <text x="105" y="20" class="uml-header" fill="#334155">UsuarioConsultaRequest</text>
+                <line x1="0" y1="30" x2="210" y2="30" stroke="#e2e8f0" stroke-width="1.5"/>
+                <text x="12" y="52" class="uml-member" fill="#64748b" font-style="italic">(Hereda nombre y correo)</text>
+                <text x="12" y="70" class="uml-member" fill="#1e293b">+ UsuarioConsultaRequest()</text>
+            </g>
+
+            <!-- UsuarioEliminacionRequest -->
+            <g transform="translate(370, 710)">
+                <rect class="uml-box" width="220" height="80" stroke="#94a3b8"/>
+                <rect width="220" height="30" fill="#f8fafc" rx="8"/>
+                <text x="110" y="20" class="uml-header" fill="#334155">UsuarioEliminacionRequest</text>
+                <line x1="0" y1="30" x2="220" y2="30" stroke="#e2e8f0" stroke-width="1.5"/>
+                <text x="12" y="52" class="uml-member" fill="#64748b" font-style="italic">(Hereda nombre y correo)</text>
+                <text x="12" y="70" class="uml-member" fill="#1e293b">+ UsuarioEliminacionRequest()</text>
+            </g>
+
+            <!-- UsuarioUpdateRequest -->
+            <g transform="translate(650, 680)">
+                <rect class="uml-box" width="250" height="140" stroke="#94a3b8"/>
+                <rect width="250" height="30" fill="#f8fafc" rx="8"/>
+                <text x="125" y="20" class="uml-header" fill="#334155">UsuarioUpdateRequest</text>
+                <line x1="0" y1="30" x2="250" y2="30" stroke="#e2e8f0" stroke-width="1.5"/>
+                <text x="12" y="50" class="uml-member" fill="#334155">- telefono : String [@Pattern]</text>
+                <text x="12" y="68" class="uml-member" fill="#334155">- activo : Boolean</text>
+                <text x="12" y="86" class="uml-member" fill="#334155">- nuevoNombre : String</text>
+                <text x="12" y="104" class="uml-member" fill="#334155">- nuevoCorreo : String [@Email]</text>
+                <text x="12" y="126" class="uml-member" fill="#64748b" font-style="italic">(Hereda llave de búsqueda)</text>
+            </g>
+
+            <!-- Flechas de Herencia DTOs -->
+            <path d="M 205 710 L 205 660 L 480 660 L 480 620" class="uml-line" marker-end="url(#arrow-inherit)"/>
+            <path d="M 480 710 L 480 620" class="uml-line" marker-end="url(#arrow-inherit)"/>
+            <path d="M 775 680 L 775 660 L 480 660 L 480 620" class="uml-line" marker-end="url(#arrow-inherit)"/>
+            <text x="490" y="645" class="uml-text-label">herencia (polimorfismo)</text>
+
+            <!-- ======================================================== -->
+            <!-- 6. JERARQUÍA DE EXCEPCIONES DE NEGOCIO                    -->
+            <!-- ======================================================== -->
+
+            <!-- NegocioException (Abstracta) -->
+            <g transform="translate(980, 500)">
+                <rect class="uml-box" width="260" height="90" stroke="#3b82f6"/>
+                <rect width="260" height="38" fill="#dbeafe" rx="8"/>
+                <text x="130" y="16" class="uml-stereotype" fill="#2563eb">&lt;&lt;abstract exception&gt;&gt;</text>
+                <text x="130" y="32" class="uml-header" fill="#1e3a8a">NegocioException</text>
+                <line x1="0" y1="38" x2="260" y2="38" stroke="#bfdbfe" stroke-width="1.5"/>
+                <text x="12" y="60" class="uml-member" fill="#334155">- codigo : String</text>
+                <text x="12" y="78" class="uml-member" fill="#1e293b">+ getCodigo() : String</text>
+            </g>
+
+            <!-- UsuarioNoEncontradoException -->
+            <g transform="translate(940, 680)">
+                <rect class="uml-box" width="160" height="70" stroke="#93c5fd"/>
+                <rect width="160" height="26" fill="#f0f9ff" rx="8"/>
+                <text x="80" y="18" class="uml-header" fill="#0369a1">NoEncontradoEx</text>
+                <line x1="0" y1="26" x2="160" y2="26" stroke="#e0f2fe" stroke-width="1.5"/>
+                <text x="10" y="46" class="uml-member" fill="#1e293b">HTTP 404</text>
+                <text x="10" y="60" class="uml-member" fill="#64748b">"USUARIO_NO_..."</text>
+            </g>
+
+            <!-- CorreoDuplicadoException -->
+            <g transform="translate(1110, 680)">
+                <rect class="uml-box" width="150" height="70" stroke="#93c5fd"/>
+                <rect width="150" height="26" fill="#f0f9ff" rx="8"/>
+                <text x="75" y="18" class="uml-header" fill="#0369a1">CorreoDuplicadoEx</text>
+                <line x1="0" y1="26" x2="150" y2="26" stroke="#e0f2fe" stroke-width="1.5"/>
+                <text x="10" y="46" class="uml-member" fill="#1e293b">HTTP 409</text>
+                <text x="10" y="60" class="uml-member" fill="#64748b">"CORREO_DUPLI..."</text>
+            </g>
+
+            <!-- Herencia Excepciones -->
+            <path d="M 1020 680 L 1020 630 L 1110 630 L 1110 590" class="uml-line" marker-end="url(#arrow-inherit)"/>
+            <path d="M 1185 680 L 1185 630 L 1110 630 L 1110 590" class="uml-line" marker-end="url(#arrow-inherit)"/>
+            <text x="1115" y="618" class="uml-text-label">hereda</text>
+
+        </svg>
+    </div>
+
+</body>
+</html>
